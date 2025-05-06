@@ -1,8 +1,21 @@
+// --- Firebase 初始化 ---
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// --- 遊戲邏輯 ---
 const lanes = document.querySelectorAll('.lane');
 const scoreSpan = document.getElementById('score');
 const livesSpan = document.getElementById('lives');
 const highscoreSpan = document.getElementById('highscore');
-
 const bgMusic = document.getElementById('bg-music');
 
 let score = 0;
@@ -11,10 +24,8 @@ let baseSpeed = 2;
 let beatInterval = 600;
 let highScore = localStorage.getItem('bananaHighScore') || 0;
 
-// Twinkle rhythm pattern
 const twinklePattern = ["a", "a", "s", "s", "d", "d", "s", null, "f", "f", "d", "d", "a", "a", "s", null];
 
-// 🎵 Map note sounds
 const sounds = {
   a: document.getElementById('sound-a'),
   s: document.getElementById('sound-s'),
@@ -24,7 +35,6 @@ const sounds = {
 
 function createNote(key) {
   if (!key) return;
-
   const lane = Array.from(lanes).find(l => l.dataset.key === key);
   const note = document.createElement('div');
   note.classList.add('note');
@@ -64,7 +74,7 @@ document.addEventListener('keydown', (e) => {
   const notes = lane.querySelectorAll('.note');
   for (const note of notes) {
     const top = parseInt(note.style.top);
-    if (top >= 400 && top <= 500) { // 🎯 easier catch window
+    if (top >= 400 && top <= 500) {
       clearInterval(note.dataset.intervalId);
       lane.removeChild(note);
       score += 100;
@@ -80,38 +90,64 @@ document.addEventListener('keydown', (e) => {
       }
 
       updateStats();
-      adjustSpeed();  // 🚀 Accelerate more after every catch
+      adjustSpeed();
       return;
     }
   }
 });
 
 function adjustSpeed() {
-    // 🚀 Increase fall speed much faster
-    baseSpeed += 0.1;  // instead of 0.03 before
-  
-    // 🚀 Increase background music playback speed faster
-    if (bgMusic) {
-      bgMusic.playbackRate += 0.01;  // instead of 0.002 before
-    }
+  baseSpeed += 0.1;
+  if (bgMusic) {
+    bgMusic.playbackRate += 0.01;
   }
-  
+}
 
 function endGame() {
-  alert("Game Over!\nYour Score: " + score);
+  document.getElementById('nameInput').style.display = 'block';
+}
+
+function submitScore() {
+  const name = document.getElementById('playerName').value.trim();
+  if (!name) return alert("Please enter your name!");
+
+  const record = {
+    name,
+    score,
+    time: new Date().toLocaleString()
+  };
+
+  db.ref('leaderboard').push(record);
+  alert("Score submitted!");
   location.reload();
+}
+
+function loadLeaderboard() {
+  const board = document.getElementById('leaderboard');
+  db.ref('leaderboard')
+    .orderByChild('score')
+    .limitToLast(10)
+    .on('value', snapshot => {
+      board.innerHTML = '';
+      const scores = [];
+      snapshot.forEach(child => scores.unshift(child.val()));
+      scores.forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = `${entry.name}: ${entry.score} (${entry.time})`;
+        board.appendChild(li);
+      });
+    });
 }
 
 let step = 0;
 function gameLoop() {
   createNote(twinklePattern[step % twinklePattern.length]);
   step++;
-
-  // Instead of fixed beatInterval, adjust dynamically if you want (optional)
   setTimeout(gameLoop, beatInterval);
 }
 
-// 🚀 Start everything
+// Start
 updateStats();
 bgMusic.play();
 gameLoop();
+loadLeaderboard();
