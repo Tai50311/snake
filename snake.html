@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Yellow Tile Rhythm Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Yellow Tile Rhythm Game (A S D F)</h1>
+  <div id="game">
+    <div class="lane" data-key="a"></div>
+    <div class="lane" data-key="s"></div>
+    <div class="lane" data-key="d"></div>
+    <div class="lane" data-key="f"></div>
+    <div id="target-line"></div>
+  </div>
+  <div id="scoreboard">
+    Score: <span id="score">0</span> | 
+    High Score: <span id="highscore">0</span> | 
+    Lives: <span id="lives">5</span>
+  </div>
+
+  <!-- 🎵 Sounds for notes -->
+  <audio id="sound-a" src="https://upload.wikimedia.org/wikipedia/commons/4/45/C_major_scale_-_C4.ogg"></audio>
+  <audio id="sound-s" src="https://upload.wikimedia.org/wikipedia/commons/9/9b/C_major_scale_-_D4.ogg"></audio>
+  <audio id="sound-d" src="https://upload.wikimedia.org/wikipedia/commons/f/f5/C_major_scale_-_E4.ogg"></audio>
+  <audio id="sound-f" src="https://upload.wikimedia.org/wikipedia/commons/b/b4/C_major_scale_-_F4.ogg"></audio>
+
+  <!-- 🎶 Background song: Twinkle Twinkle -->
+  <audio id="bg-music" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Twinkle_Twinkle_Little_Star_instrumental.ogg" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
