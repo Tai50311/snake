@@ -1,28 +1,21 @@
-// --- Firebase 初始化 ---
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-// --- 遊戲邏輯 ---
 const lanes = document.querySelectorAll('.lane');
 const scoreSpan = document.getElementById('score');
 const livesSpan = document.getElementById('lives');
 const highscoreSpan = document.getElementById('highscore');
+const startBtn = document.getElementById('start-btn');
 const bgMusic = document.getElementById('bg-music');
+const snake_1 = document.getElementById('snake_1');
+const snake_2 = document.getElementById('snake_2');
+const snake_3 = document.getElementById('snake_3');
+const snake_4 = document.getElementById('snake_4');
 
 let score = 0;
 let lives = 5;
 let baseSpeed = 2;
 let beatInterval = 600;
 let highScore = localStorage.getItem('bananaHighScore') || 0;
+let step = 0;
+let gameRunning = false;
 
 const twinklePattern = ["a", "a", "s", "s", "d", "d", "s", null, "f", "f", "d", "d", "a", "a", "s", null];
 
@@ -35,6 +28,7 @@ const sounds = {
 
 function createNote(key) {
   if (!key) return;
+
   const lane = Array.from(lanes).find(l => l.dataset.key === key);
   const note = document.createElement('div');
   note.classList.add('note');
@@ -67,9 +61,40 @@ function updateStats() {
 }
 
 document.addEventListener('keydown', (e) => {
+  if (!gameRunning) return;
+
   const key = e.key.toLowerCase();
   const lane = Array.from(lanes).find(l => l.dataset.key === key);
   if (!lane) return;
+
+  // 🐍 蛇的動畫反應（只在按下 s 鍵時）
+  if (key === 'a') {
+    snake_1.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      snake_1.style.transform = 'translateY(0)';
+    }, 150);
+  }
+
+  if (key === 's') {
+    snake_2.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      snake_2.style.transform = 'translateY(0)';
+    }, 150);
+  }
+
+  if (key === 'd') {
+    snake_3.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      snake_3.style.transform = 'translateY(0)';
+    }, 150);
+  }
+
+  if (key === 'f') {
+    snake_4.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      snake_4.style.transform = 'translateY(0)';
+    }, 150);
+  }
 
   const notes = lane.querySelectorAll('.note');
   for (const note of notes) {
@@ -104,50 +129,50 @@ function adjustSpeed() {
 }
 
 function endGame() {
-  document.getElementById('nameInput').style.display = 'block';
-}
+  const playerName = prompt("Game Over!\nYour Score: " + score + "\n請輸入你的名字：");
+  if (!playerName) return;
 
-function submitScore() {
-  const name = document.getElementById('playerName').value.trim();
-  if (!name) return alert("Please enter your name!");
+  const now = new Date();
+  const timestamp = now.toLocaleString();
 
-  const record = {
-    name,
-    score,
-    time: new Date().toLocaleString()
-  };
+  const leaderboard = JSON.parse(localStorage.getItem('bananaLeaderboard') || '[]');
 
-  db.ref('leaderboard').push(record);
-  alert("Score submitted!");
+  leaderboard.push({
+    name: playerName,
+    score: score,
+    time: timestamp
+  });
+
+  leaderboard.sort((a, b) => b.score - a.score);
+  localStorage.setItem('bananaLeaderboard', JSON.stringify(leaderboard.slice(0, 5)));
+
+  alert("分數已儲存！");
   location.reload();
 }
 
-function loadLeaderboard() {
-  const board = document.getElementById('leaderboard');
-  db.ref('leaderboard')
-    .orderByChild('score')
-    .limitToLast(10)
-    .on('value', snapshot => {
-      board.innerHTML = '';
-      const scores = [];
-      snapshot.forEach(child => scores.unshift(child.val()));
-      scores.forEach(entry => {
-        const li = document.createElement('li');
-        li.textContent = `${entry.name}: ${entry.score} (${entry.time})`;
-        board.appendChild(li);
-      });
-    });
-}
-
-let step = 0;
 function gameLoop() {
+  if (!gameRunning) return;
   createNote(twinklePattern[step % twinklePattern.length]);
   step++;
   setTimeout(gameLoop, beatInterval);
 }
 
-// Start
-updateStats();
-bgMusic.play();
-gameLoop();
+function loadLeaderboard() {
+  const leaderboard = JSON.parse(localStorage.getItem('bananaLeaderboard') || '[]');
+  const list = document.getElementById('leaderboard');
+  leaderboard.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = `${item.name} - ${item.score} 分 (${item.time})`;
+    list.appendChild(li);
+  });
+}
+
+startBtn.addEventListener('click', () => {
+  startBtn.disabled = true;
+  gameRunning = true;
+  updateStats();
+  bgMusic.play();
+  gameLoop();
+});
+
 loadLeaderboard();

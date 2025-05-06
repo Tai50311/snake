@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Yellow Tile Rhythm Game</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Yellow Tile Rhythm Game (A S D F)</h1>
+  <h1>🎵 Yellow Tile Rhythm Game 🎵</h1>
+
+  <div id="scoreboard">
+    分數：<span id="score">0</span>　 
+    生命：<span id="lives">5</span>　
+    最高分：<span id="highscore">0</span>
+  </div>
 
   <div id="game">
     <div class="lane" data-key="a"></div>
@@ -16,30 +20,24 @@
     <div class="lane" data-key="d"></div>
     <div class="lane" data-key="f"></div>
     <div id="target-line"></div>
+    <div id="snake_1">🐍</div>
+    <div id="snake_2">🐍</div>
+    <div id="snake_3">🐍</div>
+    <div id="snake_4">🐍</div>
   </div>
 
-  <div id="scoreboard">
-    Score: <span id="score">0</span> |
-    High Score: <span id="highscore">0</span> |
-    Lives: <span id="lives">5</span>
+  <button id="start-btn">開始遊戲</button>
+
+  <div id="leaderboard-container">
+    <h2>排行榜</h2>
+    <ol id="leaderboard"></ol>
   </div>
 
-  <!-- 🎵 Note sounds -->
-  <audio id="sound-a" src="https://upload.wikimedia.org/wikipedia/commons/4/45/C_major_scale_-_C4.ogg"></audio>
-  <audio id="sound-s" src="https://upload.wikimedia.org/wikipedia/commons/9/9b/C_major_scale_-_D4.ogg"></audio>
-  <audio id="sound-d" src="https://upload.wikimedia.org/wikipedia/commons/f/f5/C_major_scale_-_E4.ogg"></audio>
-  <audio id="sound-f" src="https://upload.wikimedia.org/wikipedia/commons/b/b4/C_major_scale_-_F4.ogg"></audio>
-
-  <!-- 🎶 Background music -->
-  <audio id="bg-music" src="https://upload.wikimedia.org/wikipedia/commons/4/47/Twinkle_Twinkle_Little_Star_instrumental.ogg" loop></audio>
-
-  <div id="nameInput" style="display: none;">
-    <input type="text" id="playerName" placeholder="Enter your name" />
-    <button onclick="submitScore()">Submit Score</button>
-  </div>
-
-  <h2>🏆 Leaderboard</h2>
-  <ul id="leaderboard"></ul>
+  <audio id="bg-music" src="music.mp3" loop></audio>
+  <audio id="sound-a" src="clap.wav"></audio>
+  <audio id="sound-s" src="hihat.wav"></audio>
+  <audio id="sound-d" src="kick.wav"></audio>
+  <audio id="sound-f" src="snare.wav"></audio>
 
   <script src="script.js"></script>
 </body>

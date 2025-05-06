@@ -8,7 +8,14 @@ body {
 }
 
 h1 {
-  margin-top: 20px;
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: white;
+}
+
+#scoreboard {
+  font-size: 1.2em;
+  margin-bottom: 20px;
 }
 
 #game {
@@ -29,13 +36,13 @@ h1 {
 }
 
 .note {
-  position: absolute;
-  width: 100%;
+  width: 60px;
   height: 20px;
-  background: yellow;
-  border-radius: 4px;
+  background-color: yellow;
+  position: absolute;
+  left: 10px;
   top: -20px;
-  left: 0;
+  border-radius: 6px;
 }
 
 #target-line {
@@ -48,17 +55,62 @@ h1 {
   z-index: 10;
 }
 
-#scoreboard {
+#start-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
   font-size: 18px;
-  margin-top: 10px;
+  background-color: #ffd700;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
 }
 
-#nameInput {
-  margin-top: 20px;
+#start-btn:hover {
+  background-color: #ffea4d;
+}
+
+#leaderboard-container {
+  margin-top: 30px;
+  color: #ffea4d;
 }
 
 #leaderboard {
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
+  list-style: decimal;
+  padding-left: 0;
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#snake_1 {
+  position: absolute;
+  bottom: 10px;
+  left: 5%;
+  font-size: 2em;
+  transition: transform 0.2s ease;
+}
+
+#snake_2 {
+  position: absolute;
+  bottom: 10px;
+  left: 30%;
+  font-size: 2em;
+  transition: transform 0.2s ease;
+}
+#snake_3 {
+  position: absolute;
+  bottom: 10px;
+  left: 55%;
+  font-size: 2em;
+  transition: transform 0.2s ease;
+}
+#snake_4 {
+  position: absolute;
+  bottom: 10px;
+  left: 80%;
+  font-size: 2em;
+  transition: transform 0.2s ease;
 }
